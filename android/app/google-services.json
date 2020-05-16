@@ -1,0 +1,98 @@
+{
+  "project_info": {
+    "project_number": "144351166579",
+    "firebase_url": "https://yamen-flutter-274e0.firebaseio.com",
+    "project_id": "yamen-flutter-274e0",
+    "storage_bucket": "yamen-flutter-274e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144351166579:android:57ea403e4de1fa19426a06",
+        "android_client_info": {
+          "package_name": "com.example.salam"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144351166579-id921nkaao82oldlr597f5ht0r06poil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAr3odb3tpq5xkiCNfhXBXePJE-TLsga70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144351166579-id921nkaao82oldlr597f5ht0r06poil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144351166579:android:4808adadb773cacd426a06",
+        "android_client_info": {
+          "package_name": "com.example.yamenadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144351166579-id921nkaao82oldlr597f5ht0r06poil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAr3odb3tpq5xkiCNfhXBXePJE-TLsga70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144351166579-id921nkaao82oldlr597f5ht0r06poil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:144351166579:android:35b62523fd97c8b4426a06",
+        "android_client_info": {
+          "package_name": "com.example.yamenflutter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "144351166579-id921nkaao82oldlr597f5ht0r06poil.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAr3odb3tpq5xkiCNfhXBXePJE-TLsga70"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "144351166579-id921nkaao82oldlr597f5ht0r06poil.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

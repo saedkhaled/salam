@@ -1,0 +1,102 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:salam/models/service.dart';
+import 'package:salam/models/user.dart';
+
+class ServiceCard extends StatefulWidget {
+  final int groupIndex;
+  final int serviceIndex;
+
+  ServiceCard({Key key, this.groupIndex, this.serviceIndex}) : super(key: key);
+
+  @override
+  _ServiceCardState createState() => _ServiceCardState();
+}
+
+class _ServiceCardState extends State<ServiceCard> {
+  Service service;
+  User _user;
+
+  @override
+  Widget build(BuildContext context) {
+    final user = Provider.of<Object>(context);
+    if (user != null) {
+      _user = user;
+      service = _user.getServiceGroups()[widget.groupIndex].getServices()[widget
+          .serviceIndex];
+    }
+    return Container(
+      width: 200.0,
+      decoration: new BoxDecoration(boxShadow: [
+        new BoxShadow(
+          color: Color(0xffeeeeee),
+          blurRadius: 1.0,
+          offset: new Offset(1.0, 1.0),
+        ),
+      ]),
+      child: Card(
+        child: InkWell(
+          child: Padding(
+            padding: const EdgeInsets.all(
+                4.0),
+            child: Container(
+              child: Stack(
+                children: <Widget>[
+                  service != null ? Center(
+                    child: CircleAvatar(
+                      radius: 90.0,
+                      backgroundImage: service.getImageUrl != null ? NetworkImage(
+                        service.getImageUrl(),
+                        scale: 1.0,
+                      ) : NetworkImage('https://via.placeholder.com/150'),
+                      backgroundColor: Colors.transparent,
+                    ),
+                  ) : Container(),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        decoration: new BoxDecoration(boxShadow: [
+                          new BoxShadow(
+                            color: Color(0xffeeeeee),
+                            blurRadius: 1.0,
+                            offset: new Offset(1.0, 1.0),
+                          ),
+                        ]),
+                        child: Card(
+                          child: Center(
+                            child: Text(
+                              service != null ? service.getTitle() : '......',
+                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold, fontSize: 20.0),
+                              softWrap: true,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Text(
+                            service != null ? service.getDescription() : "...........",
+                            style: TextStyle(
+                              color: Color(0xff202124),
+                            ),
+                          ),
+                          Text(
+                            service != null ? service.getPrice().toString() + ' \$' : '......',
+                            style:
+                            TextStyle(color: Color(0xff5f6368), fontSize: 12.0),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

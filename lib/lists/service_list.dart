@@ -116,7 +116,12 @@ class _ServiceListState extends State<ServiceList> {
     _checkForAvailableKeys(index);
     if (hasKeys) {
       showModalBottomSheet(context: context, builder: (context) {
-        return MyModalBottomSheet(uid: _user.getUserUid(), groupIndex: widget.groupIndex, serviceIndex: index);
+        return StreamProvider.value(
+          value: fireStoreService.streamCollectionWithOrder('/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'
+              +_user.getServiceGroups()[widget.groupIndex].getServices()[index].getTitle()
+              , 'counter'
+              , fireStoreService.keyListFromSnapshot),
+            child: MyModalBottomSheet(uid: _user.getUserUid(), groupIndex: widget.groupIndex, serviceIndex: index));
       });
     } else {
       Fluttertoast.showToast(msg: "لا يوجد أرقام في الخدمة التالية حاليا يرجى المحاولة لاحقا!",

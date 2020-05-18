@@ -34,10 +34,14 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
   bool isConfirmed = false;
   bool isLoading = false;
   FireStoreService fireStoreService = FireStoreService();
+  List<NumberKey> _keys = List();
 
   @override
   Widget build(BuildContext context) {
     _checkForAvailableKeys();
+    final keys = Provider.of<Object>(context);
+    if (keys != null)
+      _keys = keys;
     final Widget spinRing = SpinKitRing(
       color: Colors.brown,
       size: 50.0,
@@ -134,27 +138,15 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
         keysNumber = querySnapshot.documents.length;
         List<NumberKey> myKeyList = List();
         for (int i = 0; i < counter; i++) {
-//          int rand = Random.secure().nextInt(keysNumber);
-//          DocumentSnapshot snapshot = await fireStoreService
-//              .getDocumentById('/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'+service.getTitle()+'/'+rand.toString());
-//          DocumentSnapshot snapshot = querySnapshot.documents[i];
-//          NumberKey numberKey = NumberKey.fromMap(snapshot.data);
-//          while (numberKey.isUsed) {
-//            rand = Random.secure().nextInt(keysNumber);
-//            print(rand);
-//            snapshot = await fireStoreService
-//                .getDocumentById('/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'+service.getTitle()+'/'+rand.toString());
-//            snapshot = querySnapshot.documents[rand];
-//            numberKey = NumberKey.fromMap(snapshot.data);
-//            if (!numberKey.isUsed) break;
-//          }
-//          myKeyList.add(numberKey);
-//          numberKey.setIsUsed(true);
-          for(int j = 0; j < keysNumber;j++) {
-            NumberKey numberKey = NumberKey.fromMap(querySnapshot.documents[j].data);
+          for(int j = 0; j < _keys.length;j++) {
+            NumberKey numberKey = _keys[j];
+
+            print(numberKey.getNumber());
+            print(numberKey.getIsUsed());
             if (!numberKey.isUsed) {
               if (myKeyList.length < counter) {
                 myKeyList.add(numberKey);
+                print(numberKey.getNumber()+' added');
                 numberKey.setIsUsed(true);
                 fireStoreService.updateDocumentById(numberKey.toMap(), '/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'+service.getTitle()+'/'+ j.toString());
               }

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:salam/models/key.dart';
 import 'package:salam/models/movement.dart';
 import 'package:salam/models/order.dart';
 import 'package:salam/models/serviceGroup.dart';
@@ -20,6 +21,11 @@ class FireStoreService extends ChangeNotifier{
   Stream<Object> streamCollection(String path, Function objectListFromSnapshot) {
     return firestore.collection(path).
     snapshots().map(objectListFromSnapshot);
+  }
+
+  Stream<Object> streamCollectionWithOrder(String path, String field, Function objectFromSnapshot) {
+    return firestore.collection(path).orderBy(field).
+    snapshots().map(objectFromSnapshot);
   }
 
   Stream<List<Object>> streamCollectionWithQuery(String path, String field, String key, Function objectFromSnapshot) {
@@ -55,6 +61,13 @@ class FireStoreService extends ChangeNotifier{
     return serviceGroups;
   }
 
+  // getting a key list from snapshots list
+  List<NumberKey> keyListFromSnapshot (QuerySnapshot snapshots) {
+    List<NumberKey> keys = List();
+    for(int i = 0; i < snapshots.documents.length; i++)
+      keys.add(NumberKey.fromMap(snapshots.documents[i].data));
+    return keys;
+  }
   
   Future<DocumentSnapshot> getDocumentById(String path) {
     return firestore.document(path).get();

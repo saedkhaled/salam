@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +57,13 @@ class _HomeState extends State<Home> {
               Padding(
                 padding: const EdgeInsets.only(top: 30.0),
                 child: CategoryList(),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Text("تطبيقنا ما زال قيد التجريب! شكرا لكم لتعاونكم معنا",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+                ),
               ),
               Container(
                 alignment: Alignment.topRight,

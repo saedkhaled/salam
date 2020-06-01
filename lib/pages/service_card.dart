@@ -1,4 +1,6 @@
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 import 'package:salam/models/service.dart';
 import 'package:salam/models/user.dart';
@@ -16,6 +18,8 @@ class ServiceCard extends StatefulWidget {
 class _ServiceCardState extends State<ServiceCard> {
   Service service;
   User _user;
+  FirebaseStorage firebaseStorage;
+  String imageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +28,13 @@ class _ServiceCardState extends State<ServiceCard> {
       _user = user;
       service = _user.getServiceGroups()[widget.groupIndex].getServices()[widget
           .serviceIndex];
+      FirebaseStorage.instance.ref().child(service.getImageUrl()).getDownloadURL().then((dynamic result) {
+        try {
+          imageUrl = Uri.parse(result).toString();
+        } catch (e){
+          Fluttertoast.showToast(msg: "خطأ في تحميل الصورة!!",toastLength: Toast.LENGTH_SHORT);
+        }
+      });
     }
     return Container(
       width: 200.0,
@@ -45,8 +56,8 @@ class _ServiceCardState extends State<ServiceCard> {
                   service != null ? Center(
                     child: CircleAvatar(
                       radius: 90.0,
-                      backgroundImage: service.getImageUrl != null ? NetworkImage(
-                        service.getImageUrl(),
+                      backgroundImage: imageUrl != null ? NetworkImage(
+                        imageUrl,
                         scale: 1.0,
                       ) : NetworkImage('https://via.placeholder.com/150'),
                       backgroundColor: Colors.transparent,

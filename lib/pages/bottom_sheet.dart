@@ -4,7 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:salam/models/key.dart';
+import 'package:salam/models/keyGroup.dart';
+import 'package:salam/models/numberKey.dart';
 import 'package:salam/models/movement.dart';
 import 'package:salam/models/order.dart';
 import 'package:salam/models/service.dart';
@@ -26,7 +27,6 @@ class MyModalBottomSheet extends StatefulWidget {
 
 class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
   int counter = 1;
-  int keysNumber;
   int validKeysNumber;
   User _user;
   Service service;
@@ -39,9 +39,9 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
   @override
   Widget build(BuildContext context) {
     _checkForAvailableKeys();
-    final keys = Provider.of<Object>(context);
-    if (keys != null)
-      _keys = keys;
+    final KeyGroup keyGroup = Provider.of<Object>(context);
+    if (keyGroup != null)
+      _keys = keyGroup.getKeys();
     final Widget spinRing = SpinKitRing(
       color: Colors.brown,
       size: 50.0,
@@ -101,7 +101,7 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
                                   counter++;
                                 }
                                 else {
-                                  Fluttertoast.showToast(msg: "لا يتوفر لدينا حاليا هذا العدد من الأرقام يرجة المحاولة لاحقا!",
+                                  Fluttertoast.showToast(msg: "لا يتوفر لدينا حاليا هذا العدد من الأرقام يرجى المحاولة لاحقا!",
                                       toastLength: Toast.LENGTH_SHORT);
                                 }
                               });
@@ -134,22 +134,13 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
           isConfirmed = true;
           isLoading = true;
         });
-        QuerySnapshot querySnapshot = await fireStoreService.getDataCollection('/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'+service.getTitle());
-        keysNumber = querySnapshot.documents.length;
         List<NumberKey> myKeyList = List();
         for (int i = 0; i < counter; i++) {
           for(int j = 0; j < _keys.length;j++) {
-            NumberKey numberKey = _keys[j];
-
-            print(numberKey.getNumber());
-            print(numberKey.getIsUsed());
-            if (!numberKey.isUsed) {
+            if (!_keys[j].isUsed) {
               if (myKeyList.length < counter) {
-                myKeyList.add(numberKey);
-                print(numberKey.getNumber()+' added');
-                numberKey.setIsUsed(true);
-                fireStoreService.updateDocumentById(numberKey.toMap(), '/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'+service.getTitle()+'/'+ j.toString());
-              }
+                myKeyList.add(_keys[j]);
+                _keys[j].setIsUsed(true);}
             }
           }
           if (_user.getParentUid() != _user.getUserUid()) {
@@ -166,7 +157,6 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
             if (profit > 0) {
               parentUser
                   .setCurrentBalance(parentUser.getCurrentBalance() + profit);
-              print(parentUser.currentBalance);
               parentUser.getMovements().add(
                   Movement(description: "ربح من العميل", amount: profit));
               fireStoreService.updateDocumentById(
@@ -193,6 +183,20 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
             _user.getCurrentBalance() - (counter * service.getPrice()));
         fireStoreService.updateDocumentById(
             _user.toMap(), '/users/' + _user.getUserUid());
+        Firestore.instance.collection("keys2").where("name",isEqualTo: service.getTitle()).getDocuments().then((value) {
+          String documentId = value.documents[0].documentID;
+//          Fluttertoast.showToast(msg: documentId,
+//              toastLength: Toast.LENGTH_SHORT);
+          Firestore.instance.collection("keys2").document(documentId).updateData({
+            'keys' : List<dynamic>.from(_keys.map((x) => x.toMap()))
+          }).then((value) {
+            Fluttertoast.showToast(msg: "updating keys is successful!",
+                toastLength: Toast.LENGTH_SHORT);
+            print("updating keys is successful!");
+          }).catchError((onError){
+            print("updating keys failed!" + onError.toString());
+          });
+        });
       };
     } else {
       return null;
@@ -200,11 +204,9 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
   }
   _checkForAvailableKeys() async{
     int result = 0;
-    QuerySnapshot querySnapshot = await fireStoreService.getDataCollection('/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'+service.getTitle());
-    int keysNumber = querySnapshot.documents.length;
+    int keysNumber = _keys.length;
     for(int i =0;i < keysNumber; i++) {
-      NumberKey key = NumberKey.fromMap(querySnapshot.documents[i].data);
-      if (!key.isUsed) {
+      if (!_keys[i].isUsed) {
         result++;
       }
     }

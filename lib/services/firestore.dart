@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:salam/models/key.dart';
+import 'package:salam/models/keyGroup.dart';
+import 'package:salam/models/numberKey.dart';
 import 'package:salam/models/movement.dart';
 import 'package:salam/models/order.dart';
 import 'package:salam/models/serviceGroup.dart';
@@ -11,6 +12,10 @@ class FireStoreService extends ChangeNotifier{
 
   Future<QuerySnapshot> getDataCollection(String path) {
     return firestore.collection(path).getDocuments() ;
+  }
+
+  Future<QuerySnapshot> getDataCollectionWithQuery(String path, String field, String value) {
+    return firestore.collection(path).where(field, isEqualTo: value).getDocuments() ;
   }
 
   Stream<Object> streamObject(String path, Function objectFromSnapshot) {
@@ -34,6 +39,19 @@ class FireStoreService extends ChangeNotifier{
     snapshots().map(objectFromSnapshot);
   }
 
+  Stream<Object> streamObjectWithQuery(String path, String field, String key, Function objectFromSnapshot) {
+    return firestore.collection(path)
+        .where(field, isEqualTo: key).
+    snapshots().map(objectFromSnapshot);
+  }
+
+  Future<String> getDocumentId (String path, String field, String value) async{
+    return firestore.collection(path).where(field,isEqualTo: value).getDocuments().
+    then((value) {
+      return value.documents[0].documentID;
+    });
+  }
+
   List<User> userListFromSnapshot (QuerySnapshot snapshots) {
     List<User> users;
     for(int i = 0; i < snapshots.documents.length; i++)
@@ -44,6 +62,11 @@ class FireStoreService extends ChangeNotifier{
 
   User userFromSnapshot(DocumentSnapshot snapshot) {
     return User.fromMap(snapshot.data);
+  }
+
+
+  KeyGroup keyGroupFromSnapshot(QuerySnapshot querySnapshot) {
+    return KeyGroup.fromMap(querySnapshot.documents[0].data);
   }
 
   List<Order> ordersFromSnapshot(DocumentSnapshot snapshot) {

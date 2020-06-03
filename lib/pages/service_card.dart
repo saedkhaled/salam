@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -30,9 +31,11 @@ class _ServiceCardState extends State<ServiceCard> {
           .serviceIndex];
       FirebaseStorage.instance.ref().child(service.getImageUrl()).getDownloadURL().then((dynamic result) {
         try {
-          imageUrl = Uri.parse(result).toString();
+          setState(() {
+            imageUrl = Uri.parse(result).toString();
+          });
         } catch (e){
-          Fluttertoast.showToast(msg: "خطأ في تحميل الصورة!!",toastLength: Toast.LENGTH_SHORT);
+          print(e.toString());
         }
       });
     }
@@ -56,9 +59,10 @@ class _ServiceCardState extends State<ServiceCard> {
                   service != null ? Center(
                     child: CircleAvatar(
                       radius: 90.0,
-                      backgroundImage: imageUrl != null ? NetworkImage(
+                      backgroundImage: imageUrl != null ? CachedNetworkImageProvider(
                         imageUrl,
                         scale: 1.0,
+
                       ) : NetworkImage('https://via.placeholder.com/150'),
                       backgroundColor: Colors.transparent,
                     ),

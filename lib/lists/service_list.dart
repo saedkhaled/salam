@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:salam/models/key.dart';
+import 'package:salam/models/numberKey.dart';
 import 'package:salam/models/serviceGroup.dart';
 import 'package:salam/models/user.dart';
 import 'package:salam/pages/bottom_sheet.dart';
@@ -96,7 +96,7 @@ class _ServiceListState extends State<ServiceList> {
 
   _checkForAvailableKeys(int index) async{
     int result = 0;
-    QuerySnapshot querySnapshot = await fireStoreService.getDataCollection('/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'+_user.getServiceGroups()[widget.groupIndex].getServices()[index].getTitle());
+    QuerySnapshot querySnapshot = await fireStoreService.getDataCollection('/keys2/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'+_user.getServiceGroups()[widget.groupIndex].getServices()[index].getTitle());
     int keysNumber = querySnapshot.documents.length;
     for(int i =0;i < keysNumber; i++) {
       NumberKey key = NumberKey.fromMap(querySnapshot.documents[i].data);
@@ -113,19 +113,14 @@ class _ServiceListState extends State<ServiceList> {
   }
 
   void _showSettingsPanel(int index) {
-    _checkForAvailableKeys(index);
-    if (hasKeys) {
       showModalBottomSheet(context: context, builder: (context) {
         return StreamProvider.value(
-          value: fireStoreService.streamCollectionWithOrder('/keys/'+_user.getServiceGroups()[widget.groupIndex].getTitle()+'/'
-              +_user.getServiceGroups()[widget.groupIndex].getServices()[index].getTitle()
-              , 'counter'
-              , fireStoreService.keyListFromSnapshot),
+          value: fireStoreService.streamObjectWithQuery(
+              '/keys2/',
+              'name',
+              _user.getServiceGroups()[widget.groupIndex].getServices()[index].getTitle(),
+              fireStoreService.keyGroupFromSnapshot),
             child: MyModalBottomSheet(uid: _user.getUserUid(), groupIndex: widget.groupIndex, serviceIndex: index));
       });
-    } else {
-      Fluttertoast.showToast(msg: "لا يوجد أرقام في الخدمة التالية حاليا يرجى المحاولة لاحقا!",
-          toastLength: Toast.LENGTH_LONG);
-    }
   }
 }

@@ -40,77 +40,88 @@ class _ServiceCardState extends State<ServiceCard> {
       });
     }
     return Container(
-      width: 200.0,
+      width: 150.0,
       decoration: new BoxDecoration(boxShadow: [
         new BoxShadow(
-          color: Color(0xffeeeeee),
-          blurRadius: 1.0,
+          color: Colors.transparent,
+          blurRadius: 7.0,
           offset: new Offset(1.0, 1.0),
         ),
       ]),
       child: Card(
-        child: InkWell(
-          child: Padding(
-            padding: const EdgeInsets.all(
-                4.0),
-            child: Container(
-              child: Stack(
-                children: <Widget>[
-                  service != null ? Center(
-                    child: CircleAvatar(
-                      radius: 90.0,
-                      backgroundImage: imageUrl != null ? CachedNetworkImageProvider(
-                        imageUrl,
-                        scale: 1.0,
-
-                      ) : NetworkImage('https://via.placeholder.com/150'),
-                      backgroundColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: Colors.white70, width: 1),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: service != null ?
+        Stack(
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(20),topRight: Radius.circular(20)),
+              child: Container(
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.topRight,
+                        end: Alignment.bottomLeft,
+                        colors: [Color.fromARGB(255,185, 41, 255),Colors.blue[900]],
                     ),
-                  ) : Container(),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        decoration: new BoxDecoration(boxShadow: [
-                          new BoxShadow(
-                            color: Color(0xffeeeeee),
-                            blurRadius: 1.0,
-                            offset: new Offset(1.0, 1.0),
-                          ),
-                        ]),
-                        child: Card(
-                          child: Center(
-                            child: Text(
-                              service != null ? service.getTitle() : '......',
-                              style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold, fontSize: 20.0),
-                              softWrap: true,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: <Widget>[
-                          Text(
-                            service != null ? service.getDescription() : "...........",
-                            style: TextStyle(
-                              color: Color(0xff202124),
-                            ),
-                          ),
-                          Text(
-                            service != null ? service.getPrice().toString() + ' \$' : '......',
-                            style:
-                            TextStyle(color: Color(0xff5f6368), fontSize: 12.0),
-                          ),
-                        ],
-                      ),
-                    ],
+                ),
+              height: 100.0,),
+            ),
+            Container(
+              padding: EdgeInsets.only(top: 45.0),
+              alignment:Alignment.center,
+              child: Column(
+            children: <Widget>[
+              Container(
+                height: 100,
+                width: 100,
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(20.0),
+                child: Image(
+                  image: CachedNetworkImageProvider(imageUrl != null ? imageUrl : "",scale: 0.7),
+                ),
+            ),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB( 0,10.0, 0, 0),
+                child: Center(
+                  child: Text(
+                    service != null ? service.getTitle() : '......',
+                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold, fontSize: 20.0),
+                    softWrap: true,
                   ),
-                ],
+                ),
+              ),
+
+              Text(
+                service != null ? service.getDescription() : "...........",
+                style: TextStyle(
+                  color: Color(0xff202124),
+                ),
+              ),
+              Text(
+                service != null ? service.getPrice().toString() + ' \$' : '......',
+                style:
+                TextStyle(color: Color(0xff5f6368), fontSize: 18.0),
+              ),
+            ],
               ),
             ),
-          ),
-        ),
+          ],
+        )
+//                  Center(
+//                    child: CircleAvatar(
+//                      radius: 70.0,
+//                      backgroundImage: imageUrl != null ? CachedNetworkImageProvider(
+//                        imageUrl,
+//                        scale: 1.0,
+//
+//                      ) : NetworkImage('https://via.placeholder.com/150'),
+//                      backgroundColor: Colors.transparent,
+//                    ),
+//                  )
+            : Container(),
       ),
     );
   }

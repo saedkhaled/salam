@@ -54,43 +54,35 @@ class _ServiceListState extends State<ServiceList> {
     );
 
     return
-      Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
-              color: Color(0xffeeeeee),
-              blurRadius: 1.0,
-              offset: Offset(1.0, 1.0),
-            ),
-              ]),
-              child: Card(
+      Container(
+        padding: EdgeInsets.only(bottom: 20.0,right: 4.0,left: 4.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            ClipRRect(
+              borderRadius: BorderRadius.only(topRight: Radius.elliptical(100.0,10.0),topLeft: Radius.elliptical(100.0,10.0)),
+              child: Container(
+                alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Text(
-                          _user != null ? _user.getServiceGroups()[widget.groupIndex].getTitle() : 'getting info',
-                          textAlign: TextAlign.end,
-                          style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                      SizedBox(
-                        height: 40.0,
-                      ),
-                      Container(
-                        height: 240,
-                        child: listView,
-                      ),
-                    ],
+                  padding: const EdgeInsets.only(left: 20.0,top: 10.0,bottom: 10.0),
+                  child: Text(
+                    _user != null ? _user.getServiceGroups()[widget.groupIndex].getTitle().toUpperCase() : 'getting info',
+                    textAlign: TextAlign.end,
+                    style: TextStyle(fontSize: 25.0, ),
                   ),
                 ),
               ),
             ),
-          );
+            SizedBox(
+              height: 40.0,
+            ),
+            Container(
+              height: 300,
+              child: listView,
+            ),
+          ],
+        ),
+      );
   }
 
 

@@ -52,34 +52,42 @@ class _HomeState extends State<Home> {
         child: Scaffold(
           key: _scaffoldKey,
           endDrawer: MyDrawer(),
-          body: Stack(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 30.0),
-                child: CategoryList(),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Text("تطبيقنا ما زال قيد التجريب! شكرا لكم لتعاونكم معنا",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
+          body: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topRight,
+                    end: Alignment.bottomLeft,
+                    colors: [Color.fromARGB(255, 208, 196, 232),Color.fromARGB(255, 179, 77, 201)])
+            ),
+            child: Stack(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 30.0),
+                  child: CategoryList(),
                 ),
-              ),
-              Container(
-                alignment: Alignment.topRight,
-                child: Container(
-                  width: 60.0,
-                  padding:const EdgeInsets.only(right:10.0, top: 25.0),
-                  child: FloatingActionButton(
-                    backgroundColor: Color.fromARGB(255,185, 41, 255),
-                    onPressed:() {
-                      _scaffoldKey.currentState.openEndDrawer();
-                    },
-                    child: Icon(Icons.menu),
+                Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Text("تطبيقنا ما زال قيد التجريب! شكرا لكم لتعاونكم معنا",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
                   ),
                 ),
-              ),
-            ],
+                Container(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    width: 60.0,
+                    padding:const EdgeInsets.only(right:10.0, top: 25.0),
+                    child: FloatingActionButton(
+                      backgroundColor: Color.fromARGB(255,185, 41, 255),
+                      onPressed:() {
+                        _scaffoldKey.currentState.openEndDrawer();
+                      },
+                      child: Icon(Icons.menu),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

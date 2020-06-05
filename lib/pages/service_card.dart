@@ -79,7 +79,8 @@ class _ServiceCardState extends State<ServiceCard> {
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
                 child: Image(
-                  image: CachedNetworkImageProvider(imageUrl != null ? imageUrl : "",scale: 0.7),
+                  fit: BoxFit.cover,
+                  image: CachedNetworkImageProvider(imageUrl != null ? imageUrl : ""),
                 ),
             ),
               ),
@@ -88,7 +89,7 @@ class _ServiceCardState extends State<ServiceCard> {
                 child: Center(
                   child: Text(
                     service != null ? service.getTitle() : '......',
-                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold, fontSize: 20.0),
+                    style: TextStyle(color: Colors.black,fontWeight: FontWeight.bold, fontSize: 15.0),
                     softWrap: true,
                   ),
                 ),
@@ -103,7 +104,7 @@ class _ServiceCardState extends State<ServiceCard> {
               Text(
                 service != null ? service.getPrice().toString() + ' \$' : '......',
                 style:
-                TextStyle(color: Color(0xff5f6368), fontSize: 18.0),
+                TextStyle(color: Color(0xff5f6368), fontSize: 15.0),
               ),
             ],
               ),

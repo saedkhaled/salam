@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:gradient_app_bar/gradient_app_bar.dart';
 import 'package:provider/provider.dart';
 import 'package:salam/lists/category_list.dart';
 import 'package:salam/pages/my_drawer.dart';
@@ -50,6 +51,21 @@ class _HomeState extends State<Home> {
       home: StreamProvider.value(
         value: fireStoreService.streamObject('/users/' + widget.userUid, fireStoreService.userFromSnapshot),
         child: Scaffold(
+          appBar: GradientAppBar(
+            title: Center(child: Text('SALAM+',style: TextStyle(fontSize: 25.0),)),
+            leading: Container(),
+            actions: [
+              InkWell(
+                child: Image.asset('assets/images/drawer.png',
+                width: 50.0,),
+                onTap:() => _scaffoldKey.currentState.openEndDrawer(),
+              ),
+              ],
+            gradient: LinearGradient(
+                begin: Alignment.topRight,
+                end: Alignment.bottomLeft,
+                colors: [Color.fromARGB(255, 179, 77, 201),Colors.blue[900]])
+          ),
           key: _scaffoldKey,
           endDrawer: MyDrawer(),
           body: Container(
@@ -57,7 +73,7 @@ class _HomeState extends State<Home> {
                 gradient: LinearGradient(
                     begin: Alignment.topRight,
                     end: Alignment.bottomLeft,
-                    colors: [Color.fromARGB(255, 208, 196, 232),Color.fromARGB(255, 179, 77, 201)])
+                    colors: [Color.fromARGB(255, 255, 255, 255),Color.fromARGB(255, 179, 77, 201)])
             ),
             child: Stack(
               children: <Widget>[
@@ -65,27 +81,20 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.only(top: 30.0),
                   child: CategoryList(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Text("تطبيقنا ما زال قيد التجريب! شكرا لكم لتعاونكم معنا",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.bold),
-                  ),
-                ),
-                Container(
-                  alignment: Alignment.topRight,
-                  child: Container(
-                    width: 60.0,
-                    padding:const EdgeInsets.only(right:10.0, top: 25.0),
-                    child: FloatingActionButton(
-                      backgroundColor: Color.fromARGB(255,185, 41, 255),
-                      onPressed:() {
-                        _scaffoldKey.currentState.openEndDrawer();
-                      },
-                      child: Icon(Icons.menu),
-                    ),
-                  ),
-                ),
+//                Container(
+//                  alignment: Alignment.topRight,
+//                  child: Container(
+//                    width: 60.0,
+//                    padding:const EdgeInsets.only(right:10.0, top: 25.0),
+//                    child: FloatingActionButton(
+//                      backgroundColor: Color.fromARGB(255,185, 41, 255),
+//                      onPressed:() {
+//                        _scaffoldKey.currentState.openEndDrawer();
+//                      },
+//                      child: Icon(Icons.menu),
+//                    ),
+//                  ),
+//                ),
               ],
             ),
           ),

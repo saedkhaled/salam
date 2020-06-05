@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:salam/models/keyGroup.dart';
 import 'package:salam/models/numberKey.dart';
 import 'package:salam/models/serviceGroup.dart';
 import 'package:salam/models/user.dart';
@@ -25,6 +27,7 @@ class _ServiceListState extends State<ServiceList> {
   User _user;
   FireStoreService fireStoreService = FireStoreService();
   bool hasKeys = true;
+  String code = ' ';
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +40,63 @@ class _ServiceListState extends State<ServiceList> {
       itemBuilder: (BuildContext context, int index) {
         return InkWell(
           onTap:() {
-            if(_user.getCurrentBalance() >= _user.getServiceGroups()[widget.groupIndex].getServices()[index].getPrice()) {
-              _showSettingsPanel(index);
+            if(_user.getCurrentBalance() >= 5 * _user.getServiceGroups()[widget.groupIndex].getServices()[index].getPrice()) {
+//              _showSettingsPanel(index);
+            showDialog(context: context,
+            builder: (BuildContext bContext) {
+              return AlertDialog(
+                title: Container(child: Text('عملية الشراء'),alignment: Alignment.centerRight, height: 30.0,),
+                content:Container(child: Text('هل تريد تأكيد عملية الشراء؟'), alignment: Alignment.centerRight, height: 30.0,),
+                actions: <Widget>[
+                  FlatButton(
+                      onPressed: () async{
+                        String documentId = await fireStoreService.getDocumentId("/keys2/", 'name', _user.getServiceGroups()[widget.groupIndex].getServices()[index].getTitle());
+                        await fireStoreService.getDocumentById('/keys2/' + documentId).then((value) {
+                          KeyGroup keyGroup = KeyGroup.fromMap(value.data);
+                          for(int j = 0; j < keyGroup.getKeys().length;j++) {
+                            if (!keyGroup.getKeys()[j].isUsed) {
+                              setState(() {
+                                code = keyGroup.getKeys()[j].getNumber() + '\n' + keyGroup.getKeys()[j].getCode();
+                              });
+                              keyGroup.getKeys()[j].setIsUsed(true);
+                              break;
+                            }
+                          }
+                        });
+                        Navigator.of(bContext).pop();
+                        showDialog(context: context,
+                          builder: (BuildContext cContext) {
+                          return AlertDialog(
+                            title: Center(child: Text('الكود')),
+                            content: Container(decoration: BoxDecoration(boxShadow: [ BoxShadow(color: Color(0xffeeeeee), blurRadius: 1.0, offset: Offset(1.0, 1.0),),]), child: Card(child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(code, style: TextStyle(fontSize: 15.0),),
+                                  IconButton(
+                                      onPressed: () async{
+                                        Clipboard.setData(ClipboardData(text: code));
+                                        Fluttertoast.showToast(msg: "تم نسخ المحتوى",
+                                            toastLength: Toast.LENGTH_SHORT);
+                                      },
+                                      icon: Icon(Icons.content_copy)),
+                                ],
+                              ),
+                            ))),
+                          );
+                          }
+                        );
+                      },
+                      child: Container(child: Text('تأكيد'))),
+                  FlatButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text('إلفاء')),
+                ],
+              );
+            });
             }
             else{
               Fluttertoast.showToast(msg: "ليس لديك رصيد كافي لاتمام العملية!!",
@@ -68,16 +126,16 @@ class _ServiceListState extends State<ServiceList> {
                   child: Text(
                     _user != null ? _user.getServiceGroups()[widget.groupIndex].getTitle().toUpperCase() : 'getting info',
                     textAlign: TextAlign.end,
-                    style: TextStyle(fontSize: 25.0, ),
+                    style: TextStyle(fontSize: 20.0, ),
                   ),
                 ),
               ),
             ),
             SizedBox(
-              height: 40.0,
+              height: 10.0,
             ),
             Container(
-              height: 300,
+              height: 250,
               child: listView,
             ),
           ],

@@ -1,10 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:salam/models/keyGroup.dart';
+import 'package:salam/models/numberKey.dart';
 import 'package:salam/models/service.dart';
 import 'package:salam/models/user.dart';
+import 'package:salam/services/firestore.dart';
 
 class ServiceCard extends StatefulWidget {
   final int groupIndex;
@@ -21,6 +25,8 @@ class _ServiceCardState extends State<ServiceCard> {
   User _user;
   FirebaseStorage firebaseStorage;
   String imageUrl;
+  bool hasKeys = false;
+  FireStoreService fireStoreService = FireStoreService();
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +37,27 @@ class _ServiceCardState extends State<ServiceCard> {
           .serviceIndex];
       FirebaseStorage.instance.ref().child(service.getImageUrl()).getDownloadURL().then((dynamic result) {
         try {
-          setState(() {
-            imageUrl = Uri.parse(result).toString();
+          if (mounted) {
+            setState(() {
+              imageUrl = Uri.parse(result).toString();
+            });
+          }
+          fireStoreService.getDataCollectionWithQuery('/keys2/','name', service.getTitle()).then((value) {
+            hasKeys = false;
+            List<NumberKey> list = KeyGroup.fromMap(value.documents[0].data).getKeys();
+            for(int i =0;i < list.length; i++) {
+              if (!list[i].getIsUsed() && list[i].getCode() != 'null' &&
+                  list[i].getNumber() != 'null') {
+                if(mounted) {
+                  setState(() {
+                    hasKeys = true;
+                  });
+                }
+                break;
+              }
+            }
           });
+
         } catch (e){
           print(e.toString());
         }
@@ -101,10 +125,18 @@ class _ServiceCardState extends State<ServiceCard> {
                   color: Color(0xff202124),
                 ),
               ),
-              Text(
-                service != null ? service.getPrice().toString() + ' \$' : '......',
-                style:
-                TextStyle(color: Color(0xff5f6368), fontSize: 15.0),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  !hasKeys ? Container(
+                    padding: EdgeInsets.only(right: 5.0),
+                      child: Icon(Icons.error_outline,color: Colors.red,size: 20.0,)) : Container(),
+                  Text(
+                    service != null ? service.getPrice().toString() + ' \$' : '......',
+                    style:
+                    TextStyle(color: Color(0xff5f6368), fontSize: 15.0),
+                  ),
+                ],
               ),
             ],
               ),

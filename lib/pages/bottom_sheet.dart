@@ -190,8 +190,6 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
           Firestore.instance.collection("keys2").document(documentId).updateData({
             'keys' : List<dynamic>.from(_keys.map((x) => x.toMap()))
           }).then((value) {
-            Fluttertoast.showToast(msg: "updating keys is successful!",
-                toastLength: Toast.LENGTH_SHORT);
             print("updating keys is successful!");
           }).catchError((onError){
             print("updating keys failed!" + onError.toString());

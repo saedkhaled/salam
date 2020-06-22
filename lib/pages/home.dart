@@ -81,20 +81,6 @@ class _HomeState extends State<Home> {
                   padding: const EdgeInsets.only(top: 30.0),
                   child: CategoryList(),
                 ),
-//                Container(
-//                  alignment: Alignment.topRight,
-//                  child: Container(
-//                    width: 60.0,
-//                    padding:const EdgeInsets.only(right:10.0, top: 25.0),
-//                    child: FloatingActionButton(
-//                      backgroundColor: Color.fromARGB(255,185, 41, 255),
-//                      onPressed:() {
-//                        _scaffoldKey.currentState.openEndDrawer();
-//                      },
-//                      child: Icon(Icons.menu),
-//                    ),
-//                  ),
-//                ),
               ],
             ),
           ),

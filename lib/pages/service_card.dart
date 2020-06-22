@@ -25,7 +25,7 @@ class _ServiceCardState extends State<ServiceCard> {
   User _user;
   FirebaseStorage firebaseStorage;
   String imageUrl;
-  bool hasKeys = false;
+//  bool hasKeys = false;
   FireStoreService fireStoreService = FireStoreService();
 
   @override
@@ -42,21 +42,6 @@ class _ServiceCardState extends State<ServiceCard> {
               imageUrl = Uri.parse(result).toString();
             });
           }
-          fireStoreService.getDataCollectionWithQuery('/keys2/','name', service.getTitle()).then((value) {
-            hasKeys = false;
-            List<NumberKey> list = KeyGroup.fromMap(value.documents[0].data).getKeys();
-            for(int i =0;i < list.length; i++) {
-              if (!list[i].getIsUsed() && list[i].getCode() != 'null' &&
-                  list[i].getNumber() != 'null') {
-                if(mounted) {
-                  setState(() {
-                    hasKeys = true;
-                  });
-                }
-                break;
-              }
-            }
-          });
 
         } catch (e){
           print(e.toString());
@@ -127,17 +112,20 @@ class _ServiceCardState extends State<ServiceCard> {
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  !hasKeys ? Container(
-                    padding: EdgeInsets.only(right: 5.0),
-                      child: Icon(Icons.error_outline,color: Colors.red,size: 20.0,)) : Container(),
-                  Text(
-                    service != null ? service.getPrice().toString() + ' \$' : '......',
-                    style:
-                    TextStyle(color: Color(0xff5f6368), fontSize: 15.0),
-                  ),
-                ],
-              ),
+                          children: <Widget>[
+                            Container(
+//                    padding: EdgeInsets.only(right: 5.0),
+//                      child: Icon(Icons.error_outline,color: Colors.red,size: 20.0,),
+                                ),
+                            Text(
+                              service != null
+                                  ? service.getPrice().toString() + ' \$'
+                                  : '......',
+                              style: TextStyle(
+                                  color: Color(0xff5f6368), fontSize: 15.0),
+                            ),
+                          ],
+                        ),
             ],
               ),
             ),

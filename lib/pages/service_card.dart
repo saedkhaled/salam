@@ -1,11 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
-import 'package:salam/models/keyGroup.dart';
-import 'package:salam/models/numberKey.dart';
 import 'package:salam/models/service.dart';
 import 'package:salam/models/user.dart';
 import 'package:salam/services/firestore.dart';
@@ -113,10 +109,6 @@ class _ServiceCardState extends State<ServiceCard> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Container(
-//                    padding: EdgeInsets.only(right: 5.0),
-//                      child: Icon(Icons.error_outline,color: Colors.red,size: 20.0,),
-                                ),
                             Text(
                               service != null
                                   ? service.getPrice().toString() + ' \$'
@@ -131,17 +123,6 @@ class _ServiceCardState extends State<ServiceCard> {
             ),
           ],
         )
-//                  Center(
-//                    child: CircleAvatar(
-//                      radius: 70.0,
-//                      backgroundImage: imageUrl != null ? CachedNetworkImageProvider(
-//                        imageUrl,
-//                        scale: 1.0,
-//
-//                      ) : NetworkImage('https://via.placeholder.com/150'),
-//                      backgroundColor: Colors.transparent,
-//                    ),
-//                  )
             : Container(),
       ),
     );

@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:salam/pages/wrapper.dart';
 import 'package:salam/services/auth.dart';
 void main() => runApp(MyApp());
-
+//khfyf
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override

@@ -1,16 +1,16 @@
 import 'dart:async';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' as auth;
 
 class AuthService {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final auth.FirebaseAuth _firebaseAuth = auth.FirebaseAuth.instance;
   String uid;
 
-  Future<FirebaseUser> signIn(String email, String password) async {
+  Future<auth.User> signIn(String email, String password) async {
     try {
-      AuthResult result = await _firebaseAuth.signInWithEmailAndPassword(
+      auth.UserCredential result = await _firebaseAuth.signInWithEmailAndPassword(
           email: email, password: password);
 
-      FirebaseUser user = result.user;
+      auth.User user = result.user;
       uid = user.uid;
       return user;
     } catch(e) {
@@ -19,12 +19,12 @@ class AuthService {
     }
   }
 
-  Stream<FirebaseUser> get user {
-    return _firebaseAuth.onAuthStateChanged;
+  Stream<auth.User> get user {
+    return _firebaseAuth.authStateChanges();
   }
 
-  Future<FirebaseUser> getCurrentUser() async {
-    FirebaseUser user = await _firebaseAuth.currentUser();
+  Future<auth.User> getCurrentUser() async {
+    auth.User user = _firebaseAuth.currentUser;
     return user;
   }
 

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -73,6 +74,7 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
                           IconButton(
                               onPressed: () {
                                 Clipboard.setData(ClipboardData(text: code));
+
                                 Fluttertoast.showToast(msg: "تم نسخ المحتوى",
                                     toastLength: Toast.LENGTH_SHORT);
                                 },
@@ -146,7 +148,7 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
           if (_user.getParentUid() != _user.getUserUid()) {
             DocumentSnapshot snapshot = await fireStoreService
                 .getDocumentById('/users/' + _user.getParentUid());
-            User parentUser = User.fromMap(snapshot.data);
+            User parentUser = User.fromMap(snapshot.data());
             print(parentUser.currentBalance);
             double profit = counter *
                 (service.getPrice() -
@@ -183,11 +185,11 @@ class _MyModalBottomSheetState extends State<MyModalBottomSheet> {
             _user.getCurrentBalance() - (counter * service.getPrice()));
         fireStoreService.updateDocumentById(
             _user.toMap(), '/users/' + _user.getUserUid());
-        Firestore.instance.collection("keys2").where("name",isEqualTo: service.getTitle()).getDocuments().then((value) {
-          String documentId = value.documents[0].documentID;
+        FirebaseFirestore.instance.collection("keys2").where("name",isEqualTo: service.getTitle()).get().then((value) {
+          String documentId = value.docs[0].id;
 //          Fluttertoast.showToast(msg: documentId,
 //              toastLength: Toast.LENGTH_SHORT);
-          Firestore.instance.collection("keys2").document(documentId).updateData({
+          FirebaseFirestore.instance.collection("keys2").doc(documentId).update({
             'keys' : List<dynamic>.from(_keys.map((x) => x.toMap()))
           }).then((value) {
             print("updating keys is successful!");

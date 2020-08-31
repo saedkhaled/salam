@@ -74,6 +74,16 @@ class _MyDrawerState extends State<MyDrawer> {
             ),
           ),
           ListTile(
+            onTap: () => showDialog(context: context, builder: (bContext) {
+              return AlertDialog(content:Text('            +تطبيق السلام      \n للارقام و الخدمات الافتراضية \n        اصدار التطبيق: 1.0.0', style:TextStyle(fontSize: 20.0)));
+            } ),
+            title: Text('حول البرنامج'),
+            leading: Icon(
+              Icons.info,
+              size: 30.0,
+            ),
+          ),
+          ListTile(
             title: Text(
               'المبلغ الحالي ' + '\n' +
                   _user.getCurrentBalance().toStringAsFixed(2) +

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:salam/lists/service_list.dart';
@@ -18,24 +19,40 @@ class _CategoryListState extends State<CategoryList> {
   List<ServiceGroup> _serviceGroups = List();
   FireStoreService fireStoreService = FireStoreService();
   User _user;
+  int counter = 0;
+
 
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<Object>(context);
     if (user != null) _user = user;
-    Firestore.instance.collection('groups').snapshots().listen((event) {
+    FirebaseFirestore.instance.collection('groups').snapshots().listen((event) {
       _serviceGroups.clear();
-      for (DocumentSnapshot documentSnapshot in event.documents) {
-        _serviceGroups.add(ServiceGroup.fromMap(documentSnapshot.data));
+      for (DocumentSnapshot documentSnapshot in event.docs) {
+        _serviceGroups.add(ServiceGroup.fromMap(documentSnapshot.data()));
       }
-      Firestore.instance
+      fitchPrices();
+      FirebaseFirestore.instance
           .collection('users')
-          .document(_user.getUserUid())
-          .updateData({
-        'serviceGroups':
-            List<dynamic>.from(_serviceGroups.map((x) => x.toMap())),
+          .doc(_user.getUserUid())
+          .update({
+        'serviceGroups' :
+        List<dynamic>.from(_serviceGroups.map((x) => x.toMap())),
       });
     });
+//    if (counter == 0 && _user != null && _user.getServiceGroups() != null) {
+//      fitchPrices();
+//      Firestore.instance
+//          .collection('users')
+//          .document(_user.getUserUid())
+//          .updateData({
+//        'serviceGroups':
+//        List<dynamic>.from(_user.getServiceGroups().map((x) => x.toMap())),
+//      }).then((value) =>
+//          print(
+//              "updating prices is successful!"));
+//      counter++;
+//    }
     final listView = ListView.builder(
       scrollDirection: Axis.vertical,
       itemCount: _user != null ? _user.getServiceGroups().length : 7,

@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:countdown_flutter/countdown_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:salam/models/movement.dart';
 import 'package:salam/models/numberKey.dart';
 import 'package:salam/models/order.dart';
 import 'package:salam/models/user.dart';
@@ -27,8 +29,10 @@ class _ServiceListState extends State<ServiceList> {
   User _user;
   FireStoreService fireStoreService = FireStoreService();
   String fullNumber = '';
+  BuildContext codeContext;
   bool isLoading = true;
   bool isDisabled = false;
+  int availableNumbers = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +44,7 @@ class _ServiceListState extends State<ServiceList> {
           ? _user.getServiceGroups()[widget.groupIndex].getServices().length
           : 7,
       itemBuilder: (BuildContext context, int index) {
+
         return InkWell(
           onTap: () {
             if (_user.getCurrentBalance() >=
@@ -53,9 +58,45 @@ class _ServiceListState extends State<ServiceList> {
                   builder: (BuildContext bContext) {
                     return StatefulBuilder(
                         builder: (context, setMainAlertState) {
+                          String apiKey = '';
+                          FirebaseFirestore.instance.collection('other')
+                              .doc('apiKey').get().then((
+                              snapshot) async{
+                            apiKey = snapshot.data()["apiKey"];
+                            String numberPath = _user
+                                .getServiceGroups()[widget.groupIndex]
+                                .getServices()[index]
+                                .getKeyPath();
+                            String serviceString = numberPath.substring(
+                                3);
+                            String availableNumbersString = (await http
+                                    .get(
+                                'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=getNumbersStatus&country=$serviceString'))
+                            .body;
+                            String groupString = numberPath.substring(
+                                0, 2);
+                            int serviceStart = availableNumbersString
+                                .indexOf('$groupString' + '_0');
+                            setMainAlertState((){
+                              availableNumbers = int.parse(
+                                  availableNumbersString.substring(
+                                      availableNumbersString.indexOf(
+                                          ':', serviceStart) + 3,
+                                      availableNumbersString.indexOf(
+                                          ',', serviceStart) - 1
+                                  ));
+                              print('availbe numers: ' + availableNumbers.toString());
+                            });
+                          });
                           return AlertDialog(
                             title: Container(
-                              child: Text('عملية الشراء'),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween ,
+                                children: [
+                                  Text(availableNumbers.toString() + ' :الأرقام المتوفرة', style: TextStyle(fontSize: 12.0),),
+                                  Text('عملية الشراء'),
+                                ],
+                              ),
                               alignment: Alignment.centerRight,
                               height: 30.0,
                             ),
@@ -67,18 +108,17 @@ class _ServiceListState extends State<ServiceList> {
                             actions: <Widget>[
                               FlatButton(
                                   onPressed: isDisabled ? null : () async {
-                                    setMainAlertState(() {
+                                    setState(() {
                                       isDisabled = true;
                                     });
                                     fullNumber = '';
-                                    String apiKey = '';
                                     apiKey =
-                                    await Firestore.instance.collection('other')
-                                        .document('apiKey').get().then((
+                                    await FirebaseFirestore.instance.collection('other')
+                                        .doc('apiKey').get().then((
                                         snapshot) {
-                                      return snapshot.data["apiKey"];
+                                      return snapshot.data()["apiKey"];
                                     });
-                                    print(apiKey);
+//                                    print(apiKey);
                                     String numberPath = _user
                                         .getServiceGroups()[widget.groupIndex]
                                         .getServices()[index]
@@ -89,9 +129,9 @@ class _ServiceListState extends State<ServiceList> {
                                         3);
                                     String availableNumbersString = (await http
                                         .get(
-                                        'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=getNumbersStatus&country=0'))
+                                        'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=getNumbersStatus&country=$serviceString'))
                                         .body;
-                                    print(availableNumbersString);
+//                                    print(availableNumbersString);
                                     String currentBalance = (await http.get(
                                         'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=getBalance'))
                                         .body;
@@ -99,11 +139,11 @@ class _ServiceListState extends State<ServiceList> {
                                         'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=getPrices&service=$groupString&country=$serviceString'))
                                         .body;
 
-                                    print(currentBalance);
-                                    print(priceString);
+//                                    print(currentBalance);
+//                                    print(priceString);
                                     int serviceStart = availableNumbersString
                                         .indexOf('$groupString' + '_0');
-                                    int availableNumbers = int.parse(
+                                    availableNumbers = int.parse(
                                         availableNumbersString.substring(
                                             availableNumbersString.indexOf(
                                                 ':', serviceStart) + 3,
@@ -118,24 +158,24 @@ class _ServiceListState extends State<ServiceList> {
                                         priceString.indexOf('cost') + 6,
                                         priceString.indexOf(',')
                                     ));
-                                    print('saed $price');
-                                    print(groupString);
-                                    print(serviceString);
+//                                    print('saed $price');
+//                                    print(groupString);
+//                                    print(serviceString);
                                     if (balance != null &&
                                         balance > price &&
                                         availableNumbers > 0) {
                                       String numberResponse = (await http.get(
                                           'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=getNumber&service=$groupString&country=$serviceString'))
                                           .body;
-                                      print(numberResponse);
+//                                      print(numberResponse);
                                       String id = numberResponse.substring(
                                           numberResponse.indexOf(':') + 1,
                                           numberResponse.indexOf(':', 15));
                                       String numberString = numberResponse
                                           .substring(
                                           numberResponse.indexOf(':', 15) + 1);
-                                      print(id);
-                                      print(numberString);
+//                                      print(id);
+//                                      print(numberString);
                                       fullNumber = numberString;
                                       Function alertSetState;
                                       isLoading = true;
@@ -147,10 +187,11 @@ class _ServiceListState extends State<ServiceList> {
                                               return StatefulBuilder(
                                                 builder: (cContext, setState) {
                                                   alertSetState = setState;
+                                                  codeContext = cContext;
                                                   return WillPopScope(
                                                     onWillPop: () async {
-                                                      print(await http.get(
-                                                          'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=setStatus&status=8&id=$id'));
+//                                                      print(await http.get(
+//                                                          'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=setStatus&status=8&id=$id'));
                                                       return true;
                                                     },
                                                     child: AlertDialog(
@@ -219,11 +260,19 @@ class _ServiceListState extends State<ServiceList> {
                                                                   'يرجى انتظار وصول الكود'),
                                                             ],
                                                           )
-                                                              : Container(),
-                                                          isLoading
-                                                              ? Text(
-                                                              'قد تستغرق العملية بضعة دقائق لتكتمل..')
-                                                              : Container(),
+                                                              : Text(
+                                                              'لقد تمت عملية الشراء بنجاح!'
+                                                          ),
+                                                          CountdownFormatted(
+                                                            duration: Duration(minutes: 5),
+                                                            onFinish: () {
+//                                                              print('finished!');
+                                                            },
+                                                            builder: (ctx,duration) {
+                                                              return Text(duration,
+                                                              style: TextStyle(color: Colors.black,fontSize: 20.0),);
+                                                            },
+                                                          ),
                                                         ],
                                                       ),
                                                     ),
@@ -236,7 +285,7 @@ class _ServiceListState extends State<ServiceList> {
                                         new Timer.periodic(
                                             const Duration(seconds: 1),
                                                 (Timer t) async {
-                                              print('waiting!');
+//                                              print('waiting!');
                                               counter++;
                                               if (counter >= 300) {
                                                 Fluttertoast.showToast(
@@ -244,18 +293,22 @@ class _ServiceListState extends State<ServiceList> {
                                                     "حدث خطأ اثناء شراء الرقم! يرجى المحاولة لاحقا!",
                                                     toastLength: Toast
                                                         .LENGTH_SHORT);
-                                                print('closed');
+//                                                print('closed');
                                                 t.cancel();
-                                                Navigator.of(bContext).pop();
+//                                                print(await http.get(
+//                                                    'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=setStatus&status=8&id=$id'));
+                                                Navigator.of(codeContext).pop();
                                               }
                                               String statue = (await http.get(
                                                   'https://sms-activate.ru/stubs/handler_api.php?api_key=$apiKey&action=getStatus&id=$id'))
                                                   .body;
-                                              print(statue);
-                                              print(timerCounter);
-                                              if (statue.contains(
+//                                              print(statue);
+//                                              print(timerCounter);
+                                              if (
+                                              statue.contains(
                                                   'STATUS_OK') &&
-                                                  timerCounter == 0) {
+                                                  timerCounter == 0
+                                              ) {
                                                 timerCounter++;
                                                 String code = statue
                                                     .substring(
@@ -277,24 +330,29 @@ class _ServiceListState extends State<ServiceList> {
                                                         isUsed: true));
                                                 if (_user.getOrderList() ==
                                                     null)
-                                                  _user.setOrderList(
+                                                  _user
+                                                      .setOrderList(
                                                       new List<Order>());
-                                                _user.getOrderList().add(order);
+                                                _user
+                                                    .getOrderList()
+                                                    .add(order);
                                                 _user
                                                     .getMovements()
                                                     .add(order.getMovement());
-                                                _user.setCurrentBalance(
-                                                    _user.getCurrentBalance() -
+                                                _user
+                                                    .setCurrentBalance(
+                                                    _user
+                                                        .getCurrentBalance() -
                                                         _user
-                                                            .getServiceGroups()[
-                                                        widget.groupIndex]
+                                                            .getServiceGroups()[widget.groupIndex]
                                                             .getServices()[index]
                                                             .getPrice());
-                                                Firestore.instance
+                                                distributeProfit(price, index);
+                                                FirebaseFirestore.instance
                                                     .collection('users')
-                                                    .document(
+                                                    .doc(
                                                     _user.getUserUid())
-                                                    .updateData({
+                                                    .update({
                                                   'orders': List<dynamic>.from(
                                                       _user
                                                           .getOrderList()
@@ -403,5 +461,48 @@ class _ServiceListState extends State<ServiceList> {
         ],
       ),
     );
+  }
+
+  void distributeProfit (double price, int index) async {
+    User user = _user;
+    double rubPrice = await apiGetRubPrice();
+    price = (price / rubPrice)*1.07;
+//    print(price);
+    while (user.getUserUid() != user.getParentUid()){
+      User parent = await FirebaseFirestore.instance.collection('users').doc(user.getParentUid()).get().then(
+              (value) {
+                return User.fromMap(value.data());
+              });
+      parent.setCurrentBalance(
+          parent.getCurrentBalance() +(user.getServiceGroups()[widget.groupIndex].getServices()[index].getPrice() - parent.getServiceGroups()[widget.groupIndex].getServices()[index].getPrice()));
+      parent.getMovements().add(new Movement(description:"ربح من العميل", amount:user.getServiceGroups()[widget.groupIndex].getServices()[index].getPrice() - parent.getServiceGroups()[widget.groupIndex].getServices()[index].getPrice(), date: null, id:null));
+      FirebaseFirestore.instance.collection('users').doc(parent.getUserUid()).update({
+        'currentBalance':
+            parent.getCurrentBalance(),
+        'movements':
+        List<dynamic>.from(parent.getMovements().map((x) => x.toMap())),
+      }).then((value) => print('profit distributed to parent ' + parent.getUserName())).catchError((onError){
+        print('Error uploading info to '+ parent.getUserName() + ' ' + onError.toString());
+      });
+      user = parent;
+    }
+    double profit = user.getServiceGroups()[widget.groupIndex].getServices()[index].getPrice() - price;
+    FirebaseFirestore.instance.collection('other').doc('profit').get().then((value) {
+      double amount = value.data()['amount'];
+      FirebaseFirestore.instance.collection('other').doc('profit').update({
+        'amount':
+            amount+profit,
+      });
+    });
+  }
+
+  Future<double> apiGetRubPrice () async {
+    String response = (await http.get(
+        'https://api.exchangeratesapi.io/latest?base=USD&symbols=RUB')).body;
+//    print(response);
+    String stringPrice = response.substring(response.indexOf('RUB')+5,response.indexOf('}',20));
+//    print(stringPrice);
+    double price = double.parse(stringPrice);
+    return price;
   }
 }

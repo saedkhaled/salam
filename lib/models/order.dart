@@ -16,6 +16,7 @@ class Order {
   String id;
   Movement movement;
   NumberKey numberKey;
+  double price;
 
   Order({
     this.orderDate,
@@ -24,6 +25,7 @@ class Order {
     this.id,
     this.movement,
     this.numberKey,
+    this.price,
   }) {
     if (this.orderDate == null) {
       this.orderDate = getCurrentDate();
@@ -48,6 +50,7 @@ class Order {
     String id,
     Movement movement,
     NumberKey numberKey,
+    double price,
   }) =>
       Order(
         orderDate: orderDate ?? this.orderDate,
@@ -56,6 +59,7 @@ class Order {
         id: id ?? this.id,
         movement: movement ?? this.movement,
         numberKey: numberKey ?? this.numberKey,
+        price: price ?? this.price,
       );
 
   factory Order.fromJson(String str) => Order.fromMap(json.decode(str));
@@ -69,6 +73,7 @@ class Order {
     id: json["id"] == null ? null : json["id"],
     movement: json["movement"] == null ? null : Movement.fromMap(json["movement"]),
     numberKey: json["numberKey"] == null ? null : NumberKey.fromMap(json["numberKey"]),
+    price: json["price"] == null ? null : json["price"] as double,
   );
 
   Map<String, dynamic> toMap() => {
@@ -78,6 +83,7 @@ class Order {
     "id": id == null ? null : id,
     "movement": movement == null ? null : movement.toMap(),
     "numberKey": numberKey == null ? null : numberKey.toMap(),
+    "price": price == null ? null : price,
   };
   String getOrderDate() => orderDate;
   void setOrderDate(String orderDate) => this.orderDate = orderDate;
@@ -91,9 +97,11 @@ class Order {
   void setMovement(Movement movement) => this.movement = movement;
   NumberKey getNumberKey() => numberKey;
   void setNumberKey(NumberKey numberKey) => this.numberKey = numberKey;
+  double getPrice() => price;
+  void setPrice(double price) => this.price = price;
 
   Movement generateNewMovement() {
-    return Movement(id: this.getId(),description: "عملية شراء", amount:  -1 * service.getPrice(),date: this.getOrderDate());
+    return Movement(id: this.getId(),description: "عملية شراء", amount:  -1 * price,date: this.getOrderDate());
   }
 
 }

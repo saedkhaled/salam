@@ -3,23 +3,23 @@ import 'dart:convert';
 import 'package:salam/models/numberKey.dart';
 
 class KeyGroup {
-  List<NumberKey> keys;
-  String name;
+  List<NumberKey> codes;
+  String id;
 
 
 
   KeyGroup({
-    this.name,
-    this.keys,
+    this.id,
+    this.codes,
   });
 
   KeyGroup copyWith({
-    String name,
-    List<NumberKey> keys,
+    String id,
+    List<NumberKey> codes,
   }) =>
       KeyGroup(
-        name: name ?? this.name,
-        keys: keys ?? this.keys,
+        id: id ?? this.id,
+        codes: codes ?? this.codes,
       );
 
   factory KeyGroup.fromJson(String str) => KeyGroup.fromMap(json.decode(str));
@@ -27,21 +27,21 @@ class KeyGroup {
   String toJson() => json.encode(toMap());
 
   factory KeyGroup.fromMap(Map<String, dynamic> json) => KeyGroup(
-    name: json["name"] == null ? null : json["name"],
-    keys: json["keys"] == null ? null : List<NumberKey>.from(json["keys"].map((x) => NumberKey.fromMap(x))),
+    id: json["id"] == null ? null : json["id"],
+    codes: json["codes"] == null ? null : List<NumberKey>.from(json["codes"].map((x) => NumberKey.fromMap(x))),
   );
 
   Map<String, dynamic> toMap() => {
-    "name": name == null ? null : name,
-    "keys": keys == null ? null : List<dynamic>.from(keys.map((x) => x.toMap())),
+    "id": id == null ? null : id,
+    "codes": codes == null ? null : List<dynamic>.from(codes.map((x) => x.toMap())),
   };
 
-  String getName() => name;
+  String getId() => id;
 
-  void setName(String name) => this.name = name;
+  void setId(String id) => this.id = id;
 
-  List<NumberKey> getKeys() => keys;
+  List<NumberKey> getCodes() => codes;
 
-  void setKeys(List<NumberKey> keys) => this.keys = keys;
+  void setCodes(List<NumberKey> codes) => this.codes = codes;
 
 }

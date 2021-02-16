@@ -8,7 +8,6 @@ import 'package:salam/models/agent.dart';
 import 'package:salam/models/movement.dart';
 import 'package:salam/models/order.dart';
 import 'package:salam/models/price.dart';
-import 'package:salam/models/serviceGroup.dart';
 class User {
   String userName;
   String password;
@@ -18,13 +17,13 @@ class User {
   String email;
   String address;
   String userUid;
+  double price;
   double currentBalance;
   List<Price> prices;
   List<String> otherRequests;
   List<String> messages;
   List<Movement> movements;
   List<Order> orders;
-  List<ServiceGroup> serviceGroups;
   List<Agent> agents;
 
   void checkMap() {
@@ -48,6 +47,8 @@ class User {
       print("Alert: prices is null!!");
     if(this.currentBalance == null)
       print("Alert: currentBalance is null!!");
+    if(this.price == null)
+      print("Alert: price is null!!");
     if(this.otherRequests == null)
       print("Alert: otherRequests is null!!");
     if(this.messages == null)
@@ -56,8 +57,6 @@ class User {
       print("Alert: movements is null!!");
     if(this.orders == null)
       print("Alert: orders is null!!");
-    if(this.serviceGroups == null)
-      print("Alert: serviceGroups is null!!");
     if(this.agents == null)
       print("Alert: agents is null!!");
   }
@@ -83,6 +82,8 @@ class User {
       this.prices = List();
     if(this.currentBalance == null)
       this.currentBalance = 0.0;
+    if(this.price == null)
+      this.price = 0.0;
     if(this.otherRequests == null)
       this.otherRequests = List();
     if(this.messages == null)
@@ -91,8 +92,6 @@ class User {
       this.movements = List();
     if(this.orders == null)
       this.orders = List();
-    if(this.serviceGroups == null)
-      this.serviceGroups = List();
     if(this.agents == null)
       this.agents = List();
   }
@@ -108,11 +107,11 @@ class User {
     this.userUid,
     this.prices,
     this.currentBalance,
+    this.price,
     this.otherRequests,
     this.messages,
     this.movements,
     this.orders,
-    this.serviceGroups,
     this.agents,
   });
 
@@ -126,13 +125,13 @@ class User {
     String email,
     String address,
     String userUid,
-    int currentBalance,
+    double price,
+    double currentBalance,
     List<Price> prices,
     List<String> otherRequests,
     List<String> messages,
     List<Movement> movements,
     List<Order> orders,
-    List<ServiceGroup> serviceGroups,
     List<Agent> agents,
   }) =>
       User(
@@ -146,11 +145,11 @@ class User {
         userUid: userUid ?? this.userUid,
         prices: prices ?? this.prices,
         currentBalance: currentBalance ?? this.currentBalance,
+        price: price ?? this.price,
         otherRequests: otherRequests ?? this.otherRequests,
         messages: messages ?? this.messages,
         movements: movements ?? this.movements,
         orders: orders ?? this.orders,
-        serviceGroups: serviceGroups ?? this.serviceGroups,
         agents: agents ?? this.agents,
       );
 
@@ -168,12 +167,12 @@ class User {
     address: json["address"] == null ? null : json["address"],
     userUid: json["userUid"] == null ? null : json["userUid"],
     currentBalance: json["currentBalance"] == null ? null : json["currentBalance"] as double,
+    price: json["price"] == null ? null : json["price"] as double,
     prices: json["prices"] == null ? null : List<Price>.from(json["prices"].map((x) => Price.fromMap(x))),
     otherRequests: json["otherRequests"] == null ? null : List<String>.from(json["otherRequests"].map((x) => x)),
     messages: json["messages"] == null ? null : List<String>.from(json["messages"].map((x) => x)),
     movements: json["movements"] == null ? null : List<Movement>.from(json["movements"].map((x) => Movement.fromMap(x))),
     orders: json["orders"] == null ? null : List<Order>.from(json["orders"].map((x) => Order.fromMap(x))),
-    serviceGroups: json["serviceGroups"] == null ? null : List<ServiceGroup>.from(json["serviceGroups"].map((x) => ServiceGroup.fromMap(x))),
     agents: json["agents"] == null ? null : List<Agent>.from(json["agents"].map((x) => Agent.fromMap(x))),
   );
 
@@ -188,11 +187,11 @@ class User {
     "userUid": userUid == null ? null : userUid,
     "prices": prices == null ? null : List<dynamic>.from(prices.map((x) => x.toMap())),
     "currentBalance": currentBalance == null ? null : currentBalance,
+    "price": price == null ? null : price,
     "otherRequests": otherRequests == null ? null : List<dynamic>.from(otherRequests.map((x) => x)),
     "messages": messages == null ? null : List<dynamic>.from(messages.map((x) => x)),
     "movements": movements == null ? null : List<dynamic>.from(movements.map((x) => x.toMap())),
     "orders": orders == null ? null : List<dynamic>.from(orders.map((x) => x.toMap())),
-    "serviceGroups": serviceGroups == null ? null : List<dynamic>.from(serviceGroups.map((x) => x.toMap())),
     "agents": agents == null ? null : List<dynamic>.from(agents.map((x) => x.toMap())),
   };
 
@@ -211,6 +210,10 @@ class User {
   double getCurrentBalance() => currentBalance;
 
   void setCurrentBalance(double currentBalance) => this.currentBalance = currentBalance;
+
+  double getPrice() => price;
+
+  void setPrice(double price) => this.price = price;
 
   List<String> getOtherRequests() => otherRequests;
 
@@ -231,10 +234,6 @@ class User {
   List<Order> getOrderList() => orders;
 
   void setOrderList(List<Order> orderList) => this.orders = orderList;
-
-  List<ServiceGroup> getServiceGroups() => serviceGroups;
-
-  void setServiceGroups(List<ServiceGroup> serviceGroups) => this.serviceGroups = serviceGroups;
 
   List<Agent> getAgentList() => agents;
 

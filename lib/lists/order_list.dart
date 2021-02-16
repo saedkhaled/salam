@@ -77,10 +77,6 @@ class _OrderListState extends State<OrderList> {
                               Clipboard.setData(ClipboardData(
                                   text: _orderList[index]
                                           .getNumberKey()
-                                          .getNumber() +
-                                      ' ' +
-                                      _orderList[index]
-                                          .getNumberKey()
                                           .getCode()));
                             },
                           ),

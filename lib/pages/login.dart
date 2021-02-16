@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:salam/pages/loading.dart';
+import 'package:salam/services/shared_prefs.dart';
 
 import '../services/auth.dart';
+import 'home.dart';
 
 class LogIn extends StatefulWidget {
 
@@ -70,6 +72,9 @@ class _LogInState extends State<LogIn> {
             if (_user != null) {
               String uid = auth.uid;
               print('Signed in: $uid');
+              sharedPrefs.isLoggedIn = true;
+              sharedPrefs.userUid = uid;
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (BuildContext context) => Home()));
             } else {
               setState(() => loading = false);
               print("error singing in!");

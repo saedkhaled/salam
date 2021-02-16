@@ -10,7 +10,7 @@ class MyOrder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String fullNumber = order.getNumberKey().getNumber() +
+    String fullNumber = order.getNumberKey().getCode() +
         '\n' +
         order.getNumberKey().getCode();
     return MaterialApp(

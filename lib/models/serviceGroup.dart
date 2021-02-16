@@ -3,7 +3,6 @@
 //     final serviceGroup = serviceGroupFromJson(jsonString);
 
 import 'dart:convert';
-
 import 'package:salam/models/service.dart';
 class ServiceGroup {
   String title;

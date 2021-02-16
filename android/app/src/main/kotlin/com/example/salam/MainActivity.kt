@@ -1,4 +1,4 @@
-package com.example.salam
+package com.alsalam.salam
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

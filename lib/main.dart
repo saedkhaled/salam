@@ -9,7 +9,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   final RemoteConfig remoteConfig = await RemoteConfig.instance;
-  final defaults = <String, dynamic>{'force_update_app_version': '1.0.1'};
+  final defaults = <String, dynamic>{'force_update_app_version': '1.0.3'};
   await remoteConfig.setDefaults(defaults);
   await remoteConfig.fetch(expiration: const Duration(minutes: 1));
   print(await remoteConfig.activateFetched());

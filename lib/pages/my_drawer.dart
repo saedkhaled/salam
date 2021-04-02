@@ -79,17 +79,17 @@ class _MyDrawerState extends State<MyDrawer> {
                 size: 30.0,
               ),
             ),
-            ListTile(
-              onTap: () =>
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) =>
-                          MyAgents(uid: user.getUserUid()))),
-              title: Text('عملائي'),
-              leading: Icon(
-                Icons.supervised_user_circle,
-                size: 30.0,
-              ),
-            ),
+            // ListTile(
+            //   onTap: () =>
+            //       Navigator.of(context).push(MaterialPageRoute(
+            //           builder: (BuildContext context) =>
+            //               MyAgents(uid: user.getUserUid()))),
+            //   title: Text('عملائي'),
+            //   leading: Icon(
+            //     Icons.supervised_user_circle,
+            //     size: 30.0,
+            //   ),
+            // ),
             ListTile(
               onTap: () => authService.signOut(),
               title: Text('تسجيل الخروج'),

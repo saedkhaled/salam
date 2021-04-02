@@ -135,7 +135,10 @@ class _HomeState extends State<Home> {
 
   Future<List<ServiceGroup>> getServiceLists() async{
     List<ServiceGroup> serviceGroups = List();
-    QuerySnapshot list = (await FirebaseFirestore.instance.collection('groups').get());
+    QuerySnapshot list = (await FirebaseFirestore.instance.collection('groups').get().then((value) {
+      print(value.toString());
+      return value;
+    }));
     // print('response : ' +  list.docs.toString());
     for (QueryDocumentSnapshot documentSnapshot in list.docs) {
       serviceGroups.add(ServiceGroup.fromMap(documentSnapshot.data()));
